@@ -5,9 +5,16 @@
 % Arboles como Estructuras
 nodo(Etiqueta,[]) :- integer(Etiqueta).
 nodo(Etiqueta,[X|Y]) :- integer(Etiqueta).
+arista(Etiqueta, Nodo) :- integer(Etiqueta) , nodo(Nodo).
+
+% Predicado que indica si los nodos de un arbol estan bien etiquetados.
+
+bienEtiquetado(+Arbol).
+bienEtiquetado(nodo(Etiqueta,[])).
+%bienEtiquetado(nodo(Etiqueta,[X|Y])) :-
 
 
-%Arboles como Lista
+%Arboles como Listas
 li(X)        :- list(X).
 li([X])      :- integer(X).
 esq([X|Y]) :- li(X), esq(Y).
