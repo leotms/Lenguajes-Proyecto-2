@@ -14,17 +14,7 @@ esVacia([]).
 % ---------------- Casos Base --------------------
 bienEtiquetado(nodo(E,X))      :- integer(E), esVacia(X).
 
-
-bienEtiquetado(nodo(EP,[arista(Y,nodo(EH,Z))])) :-
-        integer(EP) ,
-        integer(Y),
-        integer(EH),
-        esVacia(Z),
-        Y =:= EP - EH.
-
-% ------------------------------------------------
-
-bienEtiquetado(nodo(EP,[arista(Y,nodo(EH,Z))])) :-
+bienEtiquetado(nodo(EP, arista(Y,nodo(EH,Z)))) :-
         integer(EP) ,
         integer(Y),
         integer(EH),
@@ -32,19 +22,10 @@ bienEtiquetado(nodo(EP,[arista(Y,nodo(EH,Z))])) :-
         bienEtiquetado(nodo(EH,Z)).
 
 bienEtiquetado(nodo(E,[X|XS])) :-
-        bienEtiquetado(nodo(E,X)),
+        bienEtiquetado(nodo(E,X)),!,
         bienEtiquetado(nodo(E,XS)).
 
-% ------------- Funcion Principal -------------- 
+% ------------- Funcion Principal --------------
 bienEtiquetado(+Arbol) :- bienEtiquetado(Arbol).
 
-
-
 %Arboles como Listas
-% li(X)        :- list(X).
-% li([X])      :- integer(X).
-% esq([X|Y]) :- li(X), esq(Y).
-%
-% listaEntero(X) :-   list(X).
-% listaEntero([X]) :- integer(X).
-% listaEntero([X|Y]) :- integer(X), listaEntero(Y).
