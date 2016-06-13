@@ -17,6 +17,10 @@
 maximo(X,Y,R) :- X>Y, R is X,!.
 maximo(_X,Y,Y).
 
+% Permite saber cual es el maximo valor de los elementos de una lista.
+maximoDeLaLista(I,[X],R) :- maximo(I,X,R).
+maximoDeLaLista(I,[X|Y],R) :- maximo(I,X,AuxR), maximoDeLaLista(AuxR,Y,R).
+
 % Permite saber si un elemento no es miembro de una lista.
 noEstaEnLaLista(X,[]) :- integer(X).
 noEstaEnLaLista(X,[Y|Z]) :- integer(X), integer(Y), X =\= Y, noEstaEnLaLista(X,Z).
@@ -30,25 +34,25 @@ insertarEnLaLista(X,Y,[X|Y]) :- noEstaEnLaLista(X,Y).
 % Predicado que indica si los nodos de un arbol estan bien etiquetados.
 % Tanto las etiquetas de las aristas como las de los nodos deben ser distintas.
 
-bienEtiquetado2(nodo(E,[]),LN,LA,RN,LA,MaxN,RMaxN,MaxA,MaxA) :-
-		integer(E), E > 0, maximo(MaxN,E,RMaxN),
+bienEtiquetado2(nodo(E,[]),LN,LA,RN,LA) :-
+		integer(E), E > 0,
 		insertarEnLaLista(E,LN,RN).
 
-bienEtiquetado2(nodo(EP,arista(Y,nodo(EH,Z))),LN,LA,RN,RA,MaxN,RMaxN,MaxA,RMaxA) :-
+bienEtiquetado2(nodo(EP,arista(Y,nodo(EH,Z))),LN,LA,RN,RA) :-
 	    integer(EP), integer(Y), integer(EH),
-	    Y =:= abs(EP - EH), Y > 0, maximo(MaxA,Y,AuxMaxA),
+	    Y =:= abs(EP - EH), Y > 0,
 	    insertarEnLaLista(Y,LA,AuxA),
-        bienEtiquetado2(nodo(EH,Z),LN,AuxA,RN,RA,MaxN,RMaxN,AuxMaxA,RMaxA).
+        bienEtiquetado2(nodo(EH,Z),LN,AuxA,RN,RA).
 
-bienEtiquetado2(nodo(E,[X|XS]),LN,LA,RN,RA,MaxN,RMaxN,MaxA,RMaxA) :-
-        bienEtiquetado2(nodo(E,X),LN,LA,AuxN,AuxA,MaxN,AuxMaxN,MaxA,AuxMaxA),!,
-        bienEtiquetado2(nodo(E,XS),AuxN,AuxA,RN,RA,AuxMaxN,RMaxN,AuxMaxA,RMaxA).
+bienEtiquetado2(nodo(E,[X|XS]),LN,LA,RN,RA) :-
+        bienEtiquetado2(nodo(E,X),LN,LA,AuxN,AuxA), !,
+        bienEtiquetado2(nodo(E,XS),AuxN,AuxA,RN,RA).
 
 % -------- Predicado Principal --------
 bienEtiquetado(Arbol) :-
-		MaxN is 0, MaxA is 0,
-		bienEtiquetado2(Arbol,[],[],RN,_RA,MaxN,RMaxN,MaxA,RMaxA),!,
-		length(RN,X), RMaxN =< X, RMaxA =< X - 1,!.
+		bienEtiquetado2(Arbol,[],[],RN,RA), !, length(RN,X), 
+		maximoDeLaLista(0,RN,MaxN), MaxN =< X, 
+		maximoDeLaLista(0,RA,MaxA), MaxA =< X - 1, !.
 
 % Arboles como listas
 
