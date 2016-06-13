@@ -23,16 +23,16 @@ insertarEnLaLista(X,Y,[X|Y]) :- noEstaEnLaLista(X,Y).
 
 
 % ----------------------------- bienEtiquetado --------------------------------
-% Predicado que indica si los nodos de un arbol estan bien etiquetados. 
+% Predicado que indica si los nodos de un arbol estan bien etiquetados.
 % Tanto las etiquetas de las aristas como las de los nodos deben ser distintas.
 
-bienEtiquetado2(nodo(E,[]),LN,LA,RN,LA) :- 
-		integer(E), 
+bienEtiquetado2(nodo(E,[]),LN,LA,RN,LA) :-
+		integer(E),
 		insertarEnLaLista(E,LN,RN).
 
 bienEtiquetado2(nodo(EP, arista(Y,nodo(EH,Z))),LN,LA,RN,RA) :-
-	    integer(EP), integer(Y), integer(EH), 
-	    Y =:= EP - EH, 
+	    integer(EP), integer(Y), integer(EH),
+	    Y =:= EP - EH,
 	    insertarEnLaLista(Y,LA,AuxA),
         bienEtiquetado2(nodo(EH,Z),LN,AuxA,RN,RA).
 
@@ -41,6 +41,4 @@ bienEtiquetado2(nodo(E,[X|XS]),LN,LA,RN,RA) :-
         bienEtiquetado2(nodo(E,XS),AuxN,AuxA,RN,RA).
 
 % -------- Predicado Principal --------
-bienEtiquetado(Arbol) :- bienEtiquetado2(Arbol,[],[],RN,RA),!.
-
-
+bienEtiquetado(Arbol) :- bienEtiquetado2(Arbol,[],[],_RN,_RA),!.
