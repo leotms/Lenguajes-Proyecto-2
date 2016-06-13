@@ -27,7 +27,7 @@ insertarEnLaLista(X,Y,[X|Y]) :- noEstaEnLaLista(X,Y).
 
 
 % ----------------------------- bienEtiquetado --------------------------------
-% Predicado que indica si los nodos de un arbol estan bien etiquetados. 
+% Predicado que indica si los nodos de un arbol estan bien etiquetados.
 % Tanto las etiquetas de las aristas como las de los nodos deben ser distintas.
 
 bienEtiquetado2(nodo(E,[]),LN,LA,RN,LA,MaxN,RMaxN,MaxA,MaxA) :- 
@@ -49,7 +49,3 @@ bienEtiquetado(Arbol) :-
 		MaxN is 0, MaxA is 0,
 		bienEtiquetado2(Arbol,[],[],RN,_RA,MaxN,RMaxN,MaxA,RMaxA),!, 
 		length(RN,X), RMaxN =< X, RMaxA =< X - 1,!.
-
-
-
-
