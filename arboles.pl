@@ -42,3 +42,8 @@ bienEtiquetado2(nodo(E,[X|XS]),LN,LA,RN,RA) :-
 
 % -------- Predicado Principal --------
 bienEtiquetado(Arbol) :- bienEtiquetado2(Arbol,[],[],_RN,_RA),!.
+
+
+% Arboles como listas
+agregarEsqueleto(X,V, Esq) :- insertarEnLaLista(V,X,EsqAux), Esq is EsqAux.
+esqueleto(1,1,Esq) :- agregarEsqueleto([],1,EsqAux), Esq is EsqAux.
