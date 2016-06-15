@@ -55,7 +55,7 @@ bienEtiquetado(Arbol) :-
 		maximoDeLaLista(0,RA,MaxA), MaxA =< X - 1, !.
 
 
-% -------- Describir Etiquetamiento --------
+% ----------------------- Describir Etiquetamiento ----------------------------
 
 describirEtiquetamiento2(nodo(E,[]),NpID, _NherID) :-
 			escribirNodo(NpID,E), write('\n'),!.
@@ -71,14 +71,33 @@ describirEtiquetamiento2(nodo(E,[X|XS]),NpID, NherID) :-
 			Naux is NherID + 1,
 			describirEtiquetamiento2(nodo(E,XS),NpID, Naux),!.
 
+% -------- Predicado Principal --------
 describirEtiquetamiento(Arbol) :- describirEtiquetamiento2(Arbol,'0.',0).
 
 escribirNodo(Nid,E) :- write(Nid), write(' ('), write(E), write(') ').
 escribirArista(E)   :- write(' -- '), write(E), write(' -- ').
 
-% Arboles como listas
 
-insertar(X,Y,[X|Y]).
+% ------------------------------- Esq -----------------------------------------
+
+% Arboles como listas
 
 agregarEsqueleto(X,V, Esq) :- insertarEnLaLista(V,X,EsqAux), Esq is EsqAux.
 esqueleto(1,1,Esq) :- agregarEsqueleto([],1,EsqAux), Esq is EsqAux.
+
+
+insertarXVeces(1,X,L,[X|L]).
+insertarXVeces(N,X,L,E) :- AuxL=[X|L], R is N-1, insertarXVeces(R,X,AuxL,E).
+
+verificarR(R,N,V) :- R>=N, V is N-1,!.
+verificarR(R,_N,R).
+
+esq2(N,R,A,A).
+ 
+
+esq(1,R,[[0]]) :- R>=0.
+esq(N,1,E) :- N>0, AuxN is N-1, insertarXVeces(AuxN,[1],[[0]],E).
+esq(N,R,E) :- integer(N),
+		N>0, R>0, 
+		verificarR(R,N,AuxR), AuxN is N-1,
+		esq2(AuxN,AuxR,[[AuxR]],E),!, esq(AuxN,R,E1).
