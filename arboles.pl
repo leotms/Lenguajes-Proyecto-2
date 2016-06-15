@@ -50,11 +50,35 @@ bienEtiquetado2(nodo(E,[X|XS]),LN,LA,RN,RA) :-
 
 % -------- Predicado Principal --------
 bienEtiquetado(Arbol) :-
-		bienEtiquetado2(Arbol,[],[],RN,RA), !, length(RN,X), 
-		maximoDeLaLista(0,RN,MaxN), MaxN =< X, 
+		bienEtiquetado2(Arbol,[],[],RN,RA), !, length(RN,X),
+		maximoDeLaLista(0,RN,MaxN), MaxN =< X,
 		maximoDeLaLista(0,RA,MaxA), MaxA =< X - 1, !.
 
+
+% -------- Describir Etiquetamiento --------
+
+describirEtiquetamiento2(nodo(E,[]),NpID, _NherID) :-
+			escribirNodo(NpID,E), write('\n'),!.
+
+describirEtiquetamiento2(nodo(EP,arista(Y,nodo(EH,Z))), NpID, NherID) :-
+			escribirNodo(NpID,EP),
+			atom_concat(NpID,NherID,NewID),
+			escribirArista(Y),
+			describirEtiquetamiento2(nodo(EH,Z),NewID,0).
+
+describirEtiquetamiento2(nodo(E,[X|XS]),NpID, NherID) :-
+			describirEtiquetamiento2(nodo(E,X),NpID,NherID),
+			Naux is NherID + 1,
+			describirEtiquetamiento2(nodo(E,XS),NpID, Naux),!.
+
+describirEtiquetamiento(Arbol) :- describirEtiquetamiento2(Arbol,'0.',0).
+
+escribirNodo(Nid,E) :- write(Nid), write(' ('), write(E), write(') ').
+escribirArista(E)   :- write(' -- '), write(E), write(' -- ').
+
 % Arboles como listas
+
+insertar(X,Y,[X|Y]).
 
 agregarEsqueleto(X,V, Esq) :- insertarEnLaLista(V,X,EsqAux), Esq is EsqAux.
 esqueleto(1,1,Esq) :- agregarEsqueleto([],1,EsqAux), Esq is EsqAux.
