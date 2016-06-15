@@ -58,25 +58,30 @@ bienEtiquetado(Arbol) :-
 % ----------------------- Describir Etiquetamiento ----------------------------
 
 describirEtiquetamiento2(nodo(E,[]),NpID, _NherID) :-
-			escribirNodo(NpID,E), write('\n'),!.
+			escribirNodo(NpID,E), write('\n').
 
-describirEtiquetamiento2(nodo(EP,arista(Y,nodo(EH,Z))), NpID, NherID) :-
-			escribirNodo(NpID,EP),
-			atom_concat(NpID,NherID,NewID),
+describirEtiquetamiento2(nodo(_EP,arista(Y,nodo(EH,Z))), NpID, NherID) :-
+			concatenarIdentificador(NpID,NherID,NewID),
 			escribirArista(Y),
 			describirEtiquetamiento2(nodo(EH,Z),NewID,0).
 
 describirEtiquetamiento2(nodo(E,[X|XS]),NpID, NherID) :-
+			escribirNodo(NpID,E),!,
 			describirEtiquetamiento2(nodo(E,X),NpID,NherID),
 			Naux is NherID + 1,
 			describirEtiquetamiento2(nodo(E,XS),NpID, Naux),!.
+
 
 % -------- Predicado Principal --------
 describirEtiquetamiento(Arbol) :- describirEtiquetamiento2(Arbol,'0.',0).
 
 escribirNodo(Nid,E) :- write(Nid), write(' ('), write(E), write(') ').
+
 escribirArista(E)   :- write(' -- '), write(E), write(' -- ').
 
+concatenarIdentificador(ID1, ID2, X) :-
+			atom_concat(ID1,'.',X2),
+			atom_concat(X2,ID2,X).
 
 % ------------------------------- Esq -----------------------------------------
 
