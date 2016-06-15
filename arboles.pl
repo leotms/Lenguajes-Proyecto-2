@@ -29,7 +29,7 @@ insertarEnLaLista(X,Y,[X|Y]) :- noEstaEnLaLista(X,Y).
 % =============================================================================
 % Predicado que indica si los nodos de un arbol estan bien etiquetados.
 % Parametros: Arbol - Estructura de arbol representada como
-					  nodo(EN1,[arista(EA,nodo(EN2,[])))
+%					  nodo(EN1,[arista(EA,nodo(EN2,[])))
 
 bienEtiquetadoAux(nodo(E,[]),LN,LA,RN,LA) :-
 		integer(E), E > 0,
@@ -93,6 +93,38 @@ esqueletoAux(N,R,L,ESQ,TamL) :-
 % -------- Predicado Principal --------
 esqueleto(1,_,[[0]]).
 esqueleto(N,R,ESQ) :- N > 1, esqueletoAux(N,R,[],ESQ,1).
+
+
+% ---------------------- Auxiliares etiquetamiento ----------------------------
+
+% Permite obtener la cabeza de una lista.
+obtenerCabeza([X|_XS],X).
+
+% Permite insertar al inicio de una lista.
+insertarAlPrincipioLista(X,[],[X]).
+insertarAlPrincipioLista(X,[Y|YS],[X,Y|YS]).
+
+% Permite concatenar dos listas.
+concatenarListas(X,[],X).
+concatenarListas([],X,X).
+concatenarListas([X|XS],L,[X|Z]) :- concatenarListas(XS,L,Z),!.
+
+% Permite concatener el primer elemento de dos listas en un solo elemento.
+concatenarCabezas([],[],[]).
+concatenarCabezas(L,[],L).
+concatenarCabezas([],L,L).
+concatenarCabezas([X|XS],[Y|YS],[C|Z]) :- concatenarListas(X,Y,C), 
+										  concatenarCabezas(XS,YS,Z).
+% Permite decir si dos listas son iguales.
+compararListas([],[]).
+compararListas([X|XS],[Y|YS]) :- length(XS,T1), length(YS,T2), 
+								 T1=:=T2, X=:=Y, compararListas(XS,YS).
+
+% Permite comparar si dos esqueletos son iguales.
+compararEsqueletos([],[]).
+compararEsqueletos([XS|XSS],[YS|YSS]) :- length(XSS,T1), length(YSS,T2), 
+									     T1=:=T2, compararListas(XS,YS), 
+									     compararEsqueletos(XSS,YSS).
  
 
 % --------------------------- etiquetamiento ----------------------------------
@@ -101,41 +133,26 @@ esqueleto(N,R,ESQ) :- N > 1, esqueletoAux(N,R,[],ESQ,1).
 % Parametros: Esqueleto - Arbol representado como lista para una configuracion 
 %                         especifica.
 %             Arbol     - Arbol - Estructura de arbol representada como
-					      nodo(EN1,[arista(EA,nodo(EN2,[])))
+%					      nodo(EN1,[arista(EA,nodo(EN2,[])))
 
-% insertarAlPrincipioLista([],_,[]).
-% insertarAlPrincipioLista(X,[],[X]).
-% insertarAlPrincipioLista(X,Y,[X|Y]).
+etiquetamientoAuxAristas([],[]).
 
-% concatenarListas(L1,[],L1).
-% concatenarListas([],L2,L2).
-% concatenarListas([L|LS],LR,[L|Z]) :- concatenarListas(LS,LR,Z).
+etiquetamientoAuxAristas([arista(_EA,nodo(EN,Z))|AS],Esq) :-
+		etiquetamientoAux(nodo(EN,Z),AuxEsq1),
+		etiquetamientoAuxAristas(AS,AuxEsq2),
+		concatenarCabezas(AuxEsq1,AuxEsq2,Esq),!.
 
+etiquetamientoAux(nodo(_E,[]),[[0]]).
 
+etiquetamientoAux(nodo(_EN1,arista(_EA,nodo(EN2,Z))),Esq) :-
+		etiquetamientoAux(nodo(EN2,Z),Esq).
 
-% unirSubEsqueletos([X|XS],[Y|YS],ESQ) :- 
-%	concatenarListas(X,Y,Aux1),
-%	(noVacia(XS), noVacia(YS) -> unirSubEsqueletos(XS,YS,Aux2); true),
-%	insertarAlPrincipioLista(Aux2,[],AuxESQ),
-%	insertarAlPrincipioLista(Aux1,AuxESQ,ESQ).
+etiquetamientoAux(nodo(_E,A),Esq) :-
+		etiquetamientoAuxAristas(A,AuxEsq),
+		length(A,T), insertarAlPrincipioLista([T],AuxEsq,Esq).
 
-% noVacia(L) :- length(L,T), T > 0.
-
-
-% visitarAristas([],_,[]).
-% visitarAristas([arista(E,N)|XS],L,ESQ) :- 
-%	    bienEtiquetadoAEsqueleto(N,AuxESQ),
-%	    (noVacia(XS) -> visitarAristas(XS,AuxESQ,ESQ); true).
-
-% bienEtiquetadoAEsqueleto(nodo(E,[]),ESQ) :-
-%		ESQ = [0].
-
-% bienEtiquetadoAEsqueleto(nodo(E,LA),ESQ) :-
-%		length(LA,T),
-%		visitarAristas(LA,[],SubESQ),
-%		insertarAlPrincipioLista([T],SubESQ,ESQ).
-
-% etiquetamiento(Esqueleto,Arbol) :- bienEtiquetadoAEsqueleto(Arbol,ESQ).
+etiquetamiento(Esqueleto,Arbol) :- etiquetamientoAux(Arbol,Esq),!, 
+								   compararEsqueletos(Esqueleto,Esq).
 
 
 % ---------------------------- esqtiquetable ----------------------------------
@@ -149,7 +166,7 @@ esqueleto(N,R,ESQ) :- N > 1, esqueletoAux(N,R,[],ESQ,1).
 % =============================================================================
 % Permite mostrar en pantalla la descripcion de un Arbol y su etiquetamiento.
 % Parametros: Arbol - Estructura de arbol representada como
-					  nodo(EN1,[arista(EA,nodo(EN2,[])))
+%					  nodo(EN1,[arista(EA,nodo(EN2,[])))
 
 describirEtiquetamientoAux(nodo(E,[]),NpID, _NherID) :-
 			escribirNodo(NpID,E), write('\n').
