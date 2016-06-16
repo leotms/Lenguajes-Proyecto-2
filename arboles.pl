@@ -180,7 +180,7 @@ describirEtiquetamientoAux(nodo(E,[X|XS]),NpID, NherID) :-
 			escribirNodo(NpID,E),!,
 			describirEtiquetamientoAux(nodo(E,X),NpID,NherID),
 			Naux is NherID + 1,
-			describirEtiquetamientoAux(nodo(E,XS),NpID, Naux),!.
+			(esVacia(XS) -> write('') ; describirEtiquetamientoAux(nodo(E,XS),NpID, Naux)),!.
 
 % -------- Predicado Principal --------
 describirEtiquetamiento(Arbol) :- describirEtiquetamientoAux(Arbol,'0',0).
@@ -192,3 +192,5 @@ escribirArista(E)   :- write(' -- '), write(E), write(' -- ').
 concatenarIdentificador(ID1, ID2, X) :-
 			atom_concat(ID1,'.',X2),
 			atom_concat(X2,ID2,X).
+
+esVacia([]).
