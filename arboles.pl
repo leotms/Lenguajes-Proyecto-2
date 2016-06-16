@@ -162,9 +162,26 @@ etiquetamiento(Esqueleto,Arbol) :- etiquetamientoAux(Arbol,Esq),!,
 % Parametros: Arbol -
 
 
+% ---------------------- Auxiliares describirEtiquetamiento --------------------
+
+% Muestra en pantalla la representacion de un nodo
+escribirNodo(Nid,E) :- write(Nid), write(' ('), write(E), write(') ').
+
+% Muestra en pantalla la representacion de una arista
+escribirArista(E)   :- write(' -- '), write(E), write(' -- ').
+
+% Concatena dos identificadores para identificar al nodo.
+concatenarIdentificador(ID1, ID2, X) :-
+			atom_concat(ID1,'.',X2),
+			atom_concat(X2,ID2,X).
+
+% Comprueba si una lista es vacia.
+esVacia([]).
+
 % ------------------------ describirEtiquetamiento ----------------------------
 % =============================================================================
 % Permite mostrar en pantalla la descripcion de un Arbol y su etiquetamiento.
+% El recorrido de impresion del arbol se hace en DFS.
 % Parametros: Arbol - Estructura de arbol representada como
 %					  nodo(EN1,[arista(EA,nodo(EN2,[])))
 
@@ -182,15 +199,4 @@ describirEtiquetamientoAux(nodo(E,[X|XS]),NpID, NherID) :-
 			Naux is NherID + 1,
 			(esVacia(XS) -> write('') ; describirEtiquetamientoAux(nodo(E,XS),NpID, Naux)),!.
 
-% -------- Predicado Principal --------
 describirEtiquetamiento(Arbol) :- describirEtiquetamientoAux(Arbol,'0',0).
-
-escribirNodo(Nid,E) :- write(Nid), write(' ('), write(E), write(') ').
-
-escribirArista(E)   :- write(' -- '), write(E), write(' -- ').
-
-concatenarIdentificador(ID1, ID2, X) :-
-			atom_concat(ID1,'.',X2),
-			atom_concat(X2,ID2,X).
-
-esVacia([]).
