@@ -17,7 +17,7 @@ maximoDeLaLista(I,[X|Y],R) :- maximo(I,X,AuxR), maximoDeLaLista(AuxR,Y,R).
 
 % Permite saber si un elemento no es miembro de una lista.
 noEstaEnLaLista(X,[]) :- integer(X).
-noEstaEnLaLista(X,[Y|Z]) :- integer(X), integer(Y), X =\= Y, 
+noEstaEnLaLista(X,[Y|Z]) :- integer(X), integer(Y), X =\= Y,
 							noEstaEnLaLista(X,Z).
 
 % Inserta un elemento X al inicio de la lista pasada como segundo argumento.
@@ -57,7 +57,7 @@ bienEtiquetado(Arbol) :-
 % Permite generar listas con todas las combinaciones entre 0 un maximo.
 generarLista(0,_,L,L).
 
-generarLista(TAM,MAX,L,LR) :- TAM>0, between(0,MAX,X), append(L,[X],AuxL), 
+generarLista(TAM,MAX,L,LR) :- TAM>0, between(0,MAX,X), append(L,[X],AuxL),
  							  R is TAM-1, generarLista(R,MAX,AuxL,LR).
 
 lista(TAM,MAX,L) :- generarLista(TAM,MAX,[],L).
@@ -66,7 +66,7 @@ lista(TAM,MAX,L) :- generarLista(TAM,MAX,[],L).
 % Permite verificar que una lista es no creciente.
 verificarListaNoCreciente(L) :- length(L,T), T < 2.
 
-verificarListaNoCreciente([X0,X1|XS]) :- X0 >= X1, 
+verificarListaNoCreciente([X0,X1|XS]) :- X0 >= X1,
                                          verificarListaNoCreciente([X1|XS]).
 
 
@@ -75,18 +75,18 @@ verificarListaNoCreciente([X0,X1|XS]) :- X0 >= X1,
 % Permite calcular representaciones de arboles, no ordenados, como listas.
 % Parametros: N         - Numero de nodos que posee el arbol.
 %             R         - Cantidad maxima de hijos que puede tener un nodo.
-%             Esqueleto - Arbol representado como lista para una configuracion 
+%             Esqueleto - Arbol representado como lista para una configuracion
 %                         especifica.
 
-esqueletoAux(1,_,L,ESQ,TamL) :- 
+esqueletoAux(1,_,L,ESQ,TamL) :-
 		lista(TamL,0,AuxL), append(L,[AuxL],ESQ).
 
-esqueletoAux(N,R,L,ESQ,TamL) :- 
-		N > 1, lista(TamL,R,AuxL1), 
-		verificarListaNoCreciente(AuxL1), 
+esqueletoAux(N,R,L,ESQ,TamL) :-
+		N > 1, lista(TamL,R,AuxL1),
+		verificarListaNoCreciente(AuxL1),
 		sum_list(AuxL1,AuxSumL),   % Sumamos para saber el tamano de la lista de los hijos.
-		AuxSumL > 0, 
-		append(L,[AuxL1],AuxL2),   
+		AuxSumL > 0,
+		append(L,[AuxL1],AuxL2),
 		AuxN is N-AuxSumL,         % Disminuimos el numero de nodos.
 		esqueletoAux(AuxN,R,AuxL2,ESQ,AuxSumL).
 
@@ -113,24 +113,24 @@ concatenarListas([X|XS],L,[X|Z]) :- concatenarListas(XS,L,Z),!.
 concatenarCabezas([],[],[]).
 concatenarCabezas(L,[],L).
 concatenarCabezas([],L,L).
-concatenarCabezas([X|XS],[Y|YS],[C|Z]) :- concatenarListas(X,Y,C), 
+concatenarCabezas([X|XS],[Y|YS],[C|Z]) :- concatenarListas(X,Y,C),
 										  concatenarCabezas(XS,YS,Z).
 % Permite decir si dos listas son iguales.
 compararListas([],[]).
-compararListas([X|XS],[Y|YS]) :- length(XS,T1), length(YS,T2), 
+compararListas([X|XS],[Y|YS]) :- length(XS,T1), length(YS,T2),
 								 T1=:=T2, X=:=Y, compararListas(XS,YS).
 
 % Permite comparar si dos esqueletos son iguales.
 compararEsqueletos([],[]).
-compararEsqueletos([XS|XSS],[YS|YSS]) :- length(XSS,T1), length(YSS,T2), 
-									     T1=:=T2, compararListas(XS,YS), 
+compararEsqueletos([XS|XSS],[YS|YSS]) :- length(XSS,T1), length(YSS,T2),
+									     T1=:=T2, compararListas(XS,YS),
 									     compararEsqueletos(XSS,YSS).
- 
+
 
 % --------------------------- etiquetamiento ----------------------------------
 % =============================================================================
 % Permite saber si Arbol es un buen etiquetamiento de Esqueleto.
-% Parametros: Esqueleto - Arbol representado como lista para una configuracion 
+% Parametros: Esqueleto - Arbol representado como lista para una configuracion
 %                         especifica.
 %             Arbol     - Arbol - Estructura de arbol representada como
 %					      nodo(EN1,[arista(EA,nodo(EN2,[])))
@@ -151,7 +151,7 @@ etiquetamientoAux(nodo(_E,A),Esq) :-
 		etiquetamientoAuxAristas(A,AuxEsq),
 		length(A,T), insertarAlPrincipioLista([T],AuxEsq,Esq).
 
-etiquetamiento(Esqueleto,Arbol) :- etiquetamientoAux(Arbol,Esq),!, 
+etiquetamiento(Esqueleto,Arbol) :- etiquetamientoAux(Arbol,Esq),!,
 								   compararEsqueletos(Esqueleto,Esq).
 
 
@@ -183,7 +183,7 @@ describirEtiquetamientoAux(nodo(E,[X|XS]),NpID, NherID) :-
 			describirEtiquetamientoAux(nodo(E,XS),NpID, Naux),!.
 
 % -------- Predicado Principal --------
-describirEtiquetamiento(Arbol) :- describirEtiquetamientoAux(Arbol,'0.',0).
+describirEtiquetamiento(Arbol) :- describirEtiquetamientoAux(Arbol,'0',0).
 
 escribirNodo(Nid,E) :- write(Nid), write(' ('), write(E), write(') ').
 
