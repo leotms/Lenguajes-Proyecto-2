@@ -151,7 +151,8 @@ etiquetamientoAux(nodo(_E,A),Esq) :-
 		etiquetamientoAuxAristas(A,AuxEsq),
 		length(A,T), insertarAlPrincipioLista([T],AuxEsq,Esq).
 
-etiquetamiento(Esqueleto,Arbol) :- etiquetamientoAux(Arbol,Esq),!,
+etiquetamiento(Esqueleto,Arbol) :- bienEtiquetado(Arbol),
+								   etiquetamientoAux(Arbol,Esq),!,
 								   compararEsqueletos(Esqueleto,Esq).
 
 
